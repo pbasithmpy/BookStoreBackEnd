@@ -23,6 +23,8 @@ namespace BookStoreBackEnd.Controllers
             var manager = new UserManager<ApplicationUser>(userStore);
             var user = new ApplicationUser() { UserName = account.UserName, Email = account.Email };
             IdentityResult result = manager.Create(user, account.Password);
+            var currentUser = manager.FindByName(user.UserName);
+            manager.AddToRoles(user.Id, account.Roles);
             return result;
         }
 
