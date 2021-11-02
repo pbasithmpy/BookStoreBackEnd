@@ -12,6 +12,7 @@ namespace BookStoreBackEnd.Models
         public string Password { get; set; }
         public string LoggedOn { get; set; }
         public string[]  Roles { get; set; }
+        public string Id { get; set; }
     }
 
 }

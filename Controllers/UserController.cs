@@ -42,7 +42,8 @@ namespace BookStoreBackEnd.Controllers
 
 
 
-                LoggedOn = identityClaims.FindFirst("LoggedOn").Value
+                LoggedOn = identityClaims.FindFirst("LoggedOn").Value,
+                Id = identityClaims.FindFirst("Id").Value
             };
             return model;
         }

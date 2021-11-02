@@ -20,11 +20,12 @@ namespace BookStoreBackEnd.Controllers
 
         public IQueryable<WishlistDto> GetWisthLists()
         {
-            var wishlists = from b in db.carts.Include(b => b.book)
+            var wishlists = from b in db.wishlists.Include(b => b.book)
                         select new WishlistDto()
                         {
-                            Id = b.Id,
-                            BookId = b.BookId,
+                            Id = b.id,
+                            userId = b.userid,
+                            BookId = b.booksid,
                             BookTitle = b.book.Title,
                             BookPrice = b.book.Price,
                             BookImageUrl = b.book.Image,

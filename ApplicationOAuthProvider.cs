@@ -33,6 +33,7 @@ namespace BookStoreBackEnd
                 //identity.AddClaim(new Claim("FirstName", user.FirstName));
                 //identity.AddClaim(new Claim("LastName", user.LastName));
                 identity.AddClaim(new Claim("LoggedOn", DateTime.Now.ToString()));
+                identity.AddClaim(new Claim("Id", user.Id));
                 var userRoles = manager.GetRoles(user.Id);
                 foreach (string roleName in userRoles)
                 {
@@ -41,7 +42,7 @@ namespace BookStoreBackEnd
                 var additionalData = new AuthenticationProperties(new Dictionary<string, string>{
                 {
                 "role", Newtonsoft.Json.JsonConvert.SerializeObject(userRoles)
-                }
+                },{"Id",user.Id}
                 });
                 var token = new AuthenticationTicket(identity, additionalData);
                 context.Validated(token);

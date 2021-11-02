@@ -25,6 +25,7 @@ namespace BookStoreBackEnd.Controllers
                         {
                             Id = b.Id,
                             BookId = b.BookId,
+                            userId = b.userId,
                             BookTitle = b.book.Title,
                             BookPrice = b.book.Price,
                             BookImageUrl = b.book.Image,
@@ -35,26 +36,86 @@ namespace BookStoreBackEnd.Controllers
         }
 
         // GET: api/Carts/5
-        [ResponseType(typeof(CartDto))]
-        public async Task<IHttpActionResult> GetCart(int id)
+        //[ResponseType(typeof(CartDto))]
+        //public async Task<IHttpActionResult> GetCart(string userId)
+        //{
+        //    var cart = await db.carts.Include(b => b.book).Select(b =>
+        //        new CartDto()
+        //        {
+        //            Id = b.Id,
+        //            BookId = b.BookId,
+        //            BookTitle = b.book.Title,
+        //            BookPrice = b.book.Price,
+        //            BookImageUrl = b.book.Image,
+        //            BookQuantity = b.BookQuantity
+        //        }).SingleOrDefaultAsync(b => b.userId == userId);
+        //    if (cart == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return Ok(cart);
+        //}
+
+        public IHttpActionResult GetById(string userId)
         {
-            var cart = await db.carts.Include(b => b.book).Select(b =>
-                new CartDto()
-                {
-                    Id = b.Id,
-                    BookId = b.BookId,
-                    BookTitle = b.book.Title,
-                    BookPrice = b.book.Price,
-                    BookImageUrl = b.book.Image,
-                    BookQuantity = b.BookQuantity
-                }).SingleOrDefaultAsync(b => b.Id == id);
-            if (cart == null)
+            IList<CartDto> cartItemList = null;
+            using (var ctx = new BookStoreDBEntities())
+            {
+                cartItemList = ctx.carts.Include(b => b.book)
+                                    .Where(s => s.userId == userId)
+                                    .Select(s =>
+                                    new CartDto()
+                                    {
+                                        Id = s.Id,
+                                        userId = s.userId,
+                                        BookId = s.BookId,
+                                        BookTitle = s.book.Title,
+                                        BookPrice = s.book.Price,
+                                        BookImageUrl = s.book.Image,
+                                        BookQuantity = s.BookQuantity
+
+                                    }).ToList<CartDto>();
+            }
+            if (cartItemList.Count == 0)
             {
                 return NotFound();
             }
-
-            return Ok(cart);
+            return Ok(cartItemList);
         }
+
+        //public IHttpActionResult GetAllStudents(string name)
+        //{
+        //    IList<StudentViewModel> students = null;
+
+        //    using (var ctx = new SchoolDBEntities())
+        //    {
+        //        students = ctx.Students.Include("StudentAddress")
+        //            .Where(s => s.FirstName.ToLower() == name.ToLower())
+        //            .Select(s => new StudentViewModel()
+        //            {
+        //                Id = s.StudentID,
+        //                FirstName = s.FirstName,
+        //                LastName = s.LastName,
+        //                Address = s.StudentAddress == null ? null : new AddressViewModel()
+        //                {
+        //                    StudentId = s.StudentAddress.StudentID,
+        //                    Address1 = s.StudentAddress.Address1,
+        //                    Address2 = s.StudentAddress.Address2,
+        //                    City = s.StudentAddress.City,
+        //                    State = s.StudentAddress.State
+        //                }
+        //            }).ToList<StudentViewModel>();
+        //    }
+
+        //    if (students.Count == 0)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return Ok(students);
+        //}
+
 
         // PUT: api/Carts/5
         [ResponseType(typeof(void))]
